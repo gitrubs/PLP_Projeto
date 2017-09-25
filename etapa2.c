@@ -20,6 +20,7 @@ typedef struct _idIdentifier{
 }idIdentifier;
 
 idIdentifier* ids;
+char saida[10000];
 
 // Autômato de reconhecimento global
 int automato(char* palavra,int n){
@@ -53,6 +54,7 @@ int automatoSimbolo(char* palavra,int n){
     // Estado inicial
     q0:
         if(i == n){
+            strcat(saida, "Palavra nao reconhecida \n");
             printf("Palavra nao reconhecida \n");
             return 0;
         } else{
@@ -110,6 +112,7 @@ int automatoSimbolo(char* palavra,int n){
                 goto q11;
                 break;
             default:
+                strcat(saida, "Simbolo Nao Reconhecido \n");
                 printf("Simbolo Nao Reconhecido \n");
                 return 0;
 
@@ -118,6 +121,7 @@ int automatoSimbolo(char* palavra,int n){
     // '<'
     q2:
         if(i == n){
+            strcat(saida, "RELOP <");
             printf("RELOP <");
             return 1;
         } else{
@@ -133,6 +137,7 @@ int automatoSimbolo(char* palavra,int n){
 
 
                 default:
+                    strcat(saida, "Simbolo Invalido \n");
                     printf("Simbolo invalido \n");
                     return 0;
             }
@@ -140,14 +145,17 @@ int automatoSimbolo(char* palavra,int n){
     // '<>'
     q1:
         if(i==n){
+            strcat(saida, "RELOP <> \n");
             printf("RELOP <> \n");
             return 1;
         } else{
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
         }
     // '>'
     q3:
         if(i == n){
+            strcat(saida, "RELOP > \n");
             printf("RELOP > \n");
             return 1;
         }
@@ -158,6 +166,7 @@ int automatoSimbolo(char* palavra,int n){
                     goto q5;
                     break;
                 default:
+                    strcat(saida, "Simbolo Invalido \n");
                     printf("Simbolo Invalido \n");
                     return 0;
             }
@@ -166,19 +175,27 @@ int automatoSimbolo(char* palavra,int n){
     q5:
         if(i == n){
             if(palavra[i-2] == ':'){
+                strcat(saida, "");
                 printf("ATTR OPERATOR := \n");
                 return 1;
             } else{
+                char relopQ5String[50];
+                sprintf(relopQ5String, "RELOP %c= \n",palavra[i-2]);
+                strcat(saida, relopQ5String);
                 printf("RELOP %c= \n",palavra[i-2]);
                 return 1;
             }
         } else{
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido\n");
             return 0;
         }
     // ":"
     q4:
         if(i == n){
+            char delimiterQ4String[50];
+            sprintf(delimiterQ4String, "DELIMITER %c \n", palavra[i-1]);
+            strcat(saida, delimiterQ4String);
             printf("DELIMITER %c \n",palavra[i-1]);
             return 1;
         } else{
@@ -188,6 +205,7 @@ int automatoSimbolo(char* palavra,int n){
                     goto q5;
                     break;
                 default:
+                    strcat(saida, "Simbolo Invalido");
                     printf("Simbolo Invalido \n");
                     return 0;
             }
@@ -195,15 +213,20 @@ int automatoSimbolo(char* palavra,int n){
     // '(' || ')' || ',' || '.' || ';'
     q10:
         if(i == n){
+            char delimiterQ10String[50];
+            sprintf(delimiterQ10String, "DELIMITER %c \n", palavra[i-1]);
+            strcat(saida, delimiterQ10String);
             printf("DELIMITER %c \n", palavra[i-1]);
             return 1;
         } else{
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
             return 0;
         }
     // '/'
     q6:
         if(i == n){
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
             return 0;
         } else{
@@ -219,6 +242,7 @@ int automatoSimbolo(char* palavra,int n){
     // '/*'
     q7:
         if(i == n){
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
             return 0;
         } else{
@@ -226,7 +250,8 @@ int automatoSimbolo(char* palavra,int n){
                 i++;
             }
             if(i == n){
-                printf("Simbolo invalida \n");
+                strcat(saida, "Simbolo Invalido \n");
+                printf("Simbolo Invalido \n");
                 return 0;
             }
             if(palavra[i] == '*'){
@@ -237,6 +262,7 @@ int automatoSimbolo(char* palavra,int n){
     // '/* ... *'
     q8:
         if(i == n){
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
             return 0;
         } else{
@@ -252,15 +278,20 @@ int automatoSimbolo(char* palavra,int n){
     // '/* ... */'
     q9:
         if(i == n){
+            strcat(saida, "Comentario \n");
             printf("Comentario \n");
             return 1;
         } else{
+            strcat(saida, "Simbolo Invalido \n");
             printf("Simbolo Invalido \n");
             return 0;
         }
     // '*' || '+' || 'd' || '-'
     q11:
         if(i == n){
+            char operadorQ11String[50];
+            sprintf(operadorQ11String, "Operador %c \n",palavra[i-1]);
+            strcat(saida, operadorQ11String);
             printf("Operador %c \n",palavra[i-1]);
             return 1;
         } else{
@@ -270,6 +301,7 @@ int automatoSimbolo(char* palavra,int n){
                     goto q12;
                     break;
                 default:
+                    strcat(saida, "Simbolo Invalido \n");
                     printf("Simbolo Invalido \n");
                     return 0;
             }
@@ -277,6 +309,7 @@ int automatoSimbolo(char* palavra,int n){
     // 'di'
     q12:
         if(i == n){
+            strcat(saida, "Palavra nao reconhecida \n");
             printf("Palavra nao reconhecida \n");
             return 0;
         } else{
@@ -286,6 +319,7 @@ int automatoSimbolo(char* palavra,int n){
                     goto q13;
                     break;
                 default:
+                    strcat(saida, "Simbolo invalido \n");
                     printf("Simbolo Invalido \n");
                     return 0;
             }
@@ -293,9 +327,13 @@ int automatoSimbolo(char* palavra,int n){
     // 'div'
     q13:
         if(i == n){
+            char operadorQ13String[50];
+            sprintf(operadorQ13String, "Operador %s \n",palavra);
+            strcat(saida, operadorQ13String);
             printf("Operador %s \n",palavra);
             return 1;
         } else{
+            strcat(saida, "Simbolo nao reconhecido \n");
             printf("Simbolo nao reconhecido \n");
             return 0;
         }
@@ -307,11 +345,15 @@ int automatoNumero(char* palavra,int n){
         goto q1;
         q1:
             if(i == n){
+                 char integerValueString[50];
+                 sprintf(integerValueString, "INTEGER VALUE %s \n",palavra);
+                 strcat(saida, integerValueString);
                  printf("INTEGER VALUE %s \n",palavra);
                  return 1;
             }
             // Se não estiver entre 0 e 9
             else if(!(palavra[i] >= 48 && palavra[i] <= 57)){
+                strcat(saida, "");
                 printf("Simbolo Invalido \n");
                 return 0;
             } else{
@@ -327,11 +369,15 @@ int automatoVar(char* palavra,int n){
     goto q1;
     q1:
         if(i == n){
+            char idString[50];
+            sprintf(idString, "ID %d %s \n",searchID(palavra,n), palavra);
+            strcat(saida, idString);
             printf("ID %d %s \n",searchID(palavra,n), palavra);
             return 1;
         } else{
             // Verifica se está entre (0 e 9) ou ('a' e 'z') ou ('A' e 'Z') ou '_'
             if(!(palavra[i] >= 48 && palavra[i] <= 57 || palavra[i] == '_' || palavra[i] >= 65 && palavra[i] <= 90 || palavra[i] >= 97 && palavra[i] <= 122)){
+                strcat(saida, "Simbolo Invalido \n");
                 printf("Simbolo Invalido \n");
                 return 0;
            } else{
@@ -427,12 +473,39 @@ int verificaPalavraReservada(char palavra[], int tamPalavra)
 
         if(equals(palavra, palavraReservada) == 1)
 		{
+            char reservedWordString[50];
+            sprintf(reservedWordString, "RESERVED WORD %s\n", palavra);
+            strcat(saida, reservedWordString);
 			printf("RESERVED WORD %s\n", palavra);
 			return 1;
 		}
 	}
 	return 0;
 }
+
+
+void escreverSaida(){
+    // Especifica local do arquivo a ser escrito
+	char url[] = "saida.txt";
+
+	FILE *arq;
+
+	// Abre arquivo
+	arq = fopen(url, "w");
+
+	// Verifica se foi possível abrir o arquivo
+	if(arq == NULL)
+	{
+		printf("Não foi possivel abrir o arquivo\n");
+	}
+	else
+	{
+        fprintf("%s", saida);
+    }
+
+    fclose(arq);
+}
+
 
 int main(void)
 {
@@ -482,6 +555,8 @@ int main(void)
 	}
 
 	fclose(arq);
+
+    escreverSaida();
 
 	return 0;
 }
