@@ -1,0 +1,7 @@
+int w := 2
+c := 1 + 2
+true
+not
+procedure 
+vaiFuncionar
+( int id )
