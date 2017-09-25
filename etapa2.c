@@ -8,7 +8,7 @@ int automatoSimbolo (char* palavra, int n);
 int automatoNumero (char * palavra , int n);
 int automatoVar(char* palavra,int n);
 int searchID (char * palavra,int n);
-int equals(char * palavra, char* palavra2, int n);
+int equals(char * palavra, char* palavra2);
 int contId = 0;
 
 // Estrutura para armazenar ids
@@ -20,7 +20,7 @@ typedef struct _idIdentifier{
 }idIdentifier;
 
 idIdentifier* ids;
-char saida[10000];
+char saida[300] ;
 
 // Autômato de reconhecimento global
 int automato(char* palavra,int n){
@@ -121,7 +121,7 @@ int automatoSimbolo(char* palavra,int n){
     // '<'
     q2:
         if(i == n){
-            strcat(saida, "RELOP <");
+            strcat(saida, "RELOP < \n");
             printf("RELOP <");
             return 1;
         } else{
@@ -179,10 +179,13 @@ int automatoSimbolo(char* palavra,int n){
                 printf("ATTR OPERATOR := \n");
                 return 1;
             } else{
-                char relopQ5String[50];
-                sprintf(relopQ5String, "RELOP %c= \n",palavra[i-2]);
-                strcat(saida, relopQ5String);
                 printf("RELOP %c= \n",palavra[i-2]);
+                strcat(saida, "RELOP ");
+                char str1[2] = {palavra[i-2] , '\0'};
+                char str2[5] = "";
+                strcpy(str2,str1);
+                strcat(saida, str2);
+                strcat(saida, " = \n");
                 return 1;
             }
         } else{
@@ -193,10 +196,13 @@ int automatoSimbolo(char* palavra,int n){
     // ":"
     q4:
         if(i == n){
-            char delimiterQ4String[50];
-            sprintf(delimiterQ4String, "DELIMITER %c \n", palavra[i-1]);
-            strcat(saida, delimiterQ4String);
             printf("DELIMITER %c \n",palavra[i-1]);
+            strcat(saida, "DELIMITER ");
+            char str1[2] = {palavra[i-1] , '\0'};
+            char str2[5] = "";
+            strcpy(str2,str1);
+            strcat(saida, str2);
+            strcat(saida, " \n");
             return 1;
         } else{
             switch(palavra[i]){
@@ -213,10 +219,13 @@ int automatoSimbolo(char* palavra,int n){
     // '(' || ')' || ',' || '.' || ';'
     q10:
         if(i == n){
-            char delimiterQ10String[50];
-            sprintf(delimiterQ10String, "DELIMITER %c \n", palavra[i-1]);
-            strcat(saida, delimiterQ10String);
-            printf("DELIMITER %c \n", palavra[i-1]);
+            printf("DELIMITER %c \n",palavra[i-1]);
+            strcat(saida, "DELIMITER ");
+            char str1[2] = {palavra[i-1] , '\0'};
+            char str2[5] = "";
+            strcpy(str2,str1);
+            strcat(saida, str2);
+            strcat(saida, " \n");
             return 1;
         } else{
             strcat(saida, "Simbolo Invalido \n");
@@ -289,10 +298,13 @@ int automatoSimbolo(char* palavra,int n){
     // '*' || '+' || 'd' || '-'
     q11:
         if(i == n){
-            char operadorQ11String[50];
-            sprintf(operadorQ11String, "Operador %c \n",palavra[i-1]);
-            strcat(saida, operadorQ11String);
             printf("Operador %c \n",palavra[i-1]);
+            strcat(saida, "Operador ");
+            char str1[2] = {palavra[i-1] , '\0'};
+            char str2[5] = "";
+            strcpy(str2,str1);
+            strcat(saida, str2);
+            strcat(saida, " \n");
             return 1;
         } else{
             switch(palavra[i]){
@@ -327,10 +339,10 @@ int automatoSimbolo(char* palavra,int n){
     // 'div'
     q13:
         if(i == n){
-            char operadorQ13String[50];
-            sprintf(operadorQ13String, "Operador %s \n",palavra);
-            strcat(saida, operadorQ13String);
             printf("Operador %s \n",palavra);
+            strcat(saida, "Operador ");
+            strcat(saida, palavra);
+            strcat(saida, " \n");
             return 1;
         } else{
             strcat(saida, "Simbolo nao reconhecido \n");
@@ -345,9 +357,9 @@ int automatoNumero(char* palavra,int n){
         goto q1;
         q1:
             if(i == n){
-                 char integerValueString[50];
-                 sprintf(integerValueString, "INTEGER VALUE %s \n",palavra);
-                 strcat(saida, integerValueString);
+                 strcat(saida, "INTEGER VALUE ");
+                 strcat(saida, palavra);
+                 strcat(saida, " \n");
                  printf("INTEGER VALUE %s \n",palavra);
                  return 1;
             }
@@ -370,9 +382,14 @@ int automatoVar(char* palavra,int n){
     q1:
         if(i == n){
             char idString[50];
-            sprintf(idString, "ID %d %s \n",searchID(palavra,n), palavra);
-            strcat(saida, idString);
-            printf("ID %d %s \n",searchID(palavra,n), palavra);
+            strcat(saida, "ID ");
+            int searchIdResult = searchID(palavra,n);
+            char str2[10];
+            sprintf(str2, "%d", searchIdResult);
+            strcat(saida, str2);
+            strcat(saida, " ");
+            strcat(saida, palavra);
+            strcat(saida, " \n");
             return 1;
         } else{
             // Verifica se está entre (0 e 9) ou ('a' e 'z') ou ('A' e 'Z') ou '_'
@@ -442,65 +459,65 @@ int equals(char* palavra,char* palavra2){
 // Reconhecimento de palavra reservada da linguagem
 int verificaPalavraReservada(char palavra[], int tamPalavra)
 {
-	int quantPalavrasReservadas = 18;
-	int tamMaiorPalavraReservada = 9;
+    int quantPalavrasReservadas = 18;
+    int tamMaiorPalavraReservada = 9;
 
-	char * palavrasReservadas[18];
-	palavrasReservadas[0] = "program";
-	palavrasReservadas[1] = "if";
-	palavrasReservadas[2] = "do";
-	palavrasReservadas[3] = "var";
-	palavrasReservadas[4] = "false";
-	palavrasReservadas[5] = "begin";
-	palavrasReservadas[6] = "then";
-	palavrasReservadas[7] = "and";
-	palavrasReservadas[8] = "integer";
-	palavrasReservadas[9] = "write";
-	palavrasReservadas[10] = "end";
-	palavrasReservadas[11] = "else";
-	palavrasReservadas[12] = "or";
-	palavrasReservadas[13] = "boolean";
-	palavrasReservadas[14] = "procedure";
-	palavrasReservadas[15] = "while";
-	palavrasReservadas[16] = "not";
-	palavrasReservadas[17] = "true";
+    char * palavrasReservadas[18];
+    palavrasReservadas[0] = "program";
+    palavrasReservadas[1] = "if";
+    palavrasReservadas[2] = "do";
+    palavrasReservadas[3] = "var";
+    palavrasReservadas[4] = "false";
+    palavrasReservadas[5] = "begin";
+    palavrasReservadas[6] = "then";
+    palavrasReservadas[7] = "and";
+    palavrasReservadas[8] = "integer";
+    palavrasReservadas[9] = "write";
+    palavrasReservadas[10] = "end";
+    palavrasReservadas[11] = "else";
+    palavrasReservadas[12] = "or";
+    palavrasReservadas[13] = "boolean";
+    palavrasReservadas[14] = "procedure";
+    palavrasReservadas[15] = "while";
+    palavrasReservadas[16] = "not";
+    palavrasReservadas[17] = "true";
 
-	// Percorre as palavras reservadas e verifica a palavra dada
-	int i;
-	for(i = 0; i < quantPalavrasReservadas; i++)
-	{
-		char * palavraReservada = palavrasReservadas[i];
+    // Percorre as palavras reservadas e verifica a palavra dada
+    int i;
+    for(i = 0; i < quantPalavrasReservadas; i++)
+    {
+        char * palavraReservada = palavrasReservadas[i];
 
         if(equals(palavra, palavraReservada) == 1)
-		{
-            char reservedWordString[50];
-            sprintf(reservedWordString, "RESERVED WORD %s\n", palavra);
-            strcat(saida, reservedWordString);
-			printf("RESERVED WORD %s\n", palavra);
-			return 1;
-		}
-	}
-	return 0;
+        {
+            strcat(saida, "RESERVED WORD ");
+            strcat(saida, palavra);
+            strcat(saida, " \n");
+            printf("RESERVED WORD %s\n", palavra);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 
 void escreverSaida(){
     // Especifica local do arquivo a ser escrito
-	char url[] = "saida.txt";
+    char url[] = "saida.txt";
 
-	FILE *arq;
+    FILE *arq;
 
-	// Abre arquivo
-	arq = fopen(url, "w");
+    // Abre arquivo
+    arq = fopen(url, "w");
 
-	// Verifica se foi possível abrir o arquivo
-	if(arq == NULL)
-	{
-		printf("Não foi possivel abrir o arquivo\n");
-	}
-	else
-	{
-        fprintf("%s", saida);
+    // Verifica se foi possível abrir o arquivo
+    if(arq == NULL)
+    {
+        printf("Não foi possivel abrir o arquivo\n");
+    }
+    else
+    {
+        fprintf(arq, "%s", saida);
     }
 
     fclose(arq);
@@ -509,54 +526,54 @@ void escreverSaida(){
 
 int main(void)
 {
-	// Especifica local do arquivo a ser lido
-	char url[] = "arquivo.txt";
-	char linha[100];
-	FILE *arq;
+    // Especifica local do arquivo a ser lido
+    char url[] = "arquivo.txt";
+    char linha[100];
+    FILE *arq;
 
-	// Abre arquivo
-	arq = fopen(url, "r");
+    // Abre arquivo
+    arq = fopen(url, "r");
 
-	// Verifica se foi possível abrir o arquivo
-	if(arq == NULL)
-	{
-		printf("Não foi possivel abrir o arquivo\n");
-	}
-	else
-	{
-		int i = 0;
-		char * p;
+    // Verifica se foi possível abrir o arquivo
+    if(arq == NULL)
+    {
+        printf("Não foi possivel abrir o arquivo\n");
+    }
+    else
+    {
+        int i = 0;
+        char * p;
 
-		// Lê linha a linha do arquivo
-		while (fgets(linha, sizeof(linha), arq) != NULL)
-	    {
-	    	// Remove \r e \n da linha
-			linha[strcspn(linha, "\r\n")] = 0;
+        // Lê linha a linha do arquivo
+        while (fgets(linha, sizeof(linha), arq) != NULL)
+        {
+            // Remove \r e \n da linha
+            linha[strcspn(linha, "\r\n")] = 0;
 
-	    	// Lê palavra a palavra (diferenciada por espaço) da linha lida
-	    	p = strtok(linha," ");
+            // Lê palavra a palavra (diferenciada por espaço) da linha lida
+            p = strtok(linha," ");
 
-			while (p != NULL)
-			{
-				int tamP = strlen(p);
+            while (p != NULL)
+            {
+                int tamP = strlen(p);
 
-				// Verifica se a palavra é reservada
-				if(verificaPalavraReservada(p, tamP) != 1)
-				{
+                // Verifica se a palavra é reservada
+                if(verificaPalavraReservada(p, tamP) != 1)
+                {
 
-					// Valida reconhecimento da palavra que não é reservada
-					automato(p, tamP);
-				}
+                    // Valida reconhecimento da palavra que não é reservada
+                    automato(p, tamP);
+                }
 
-				// Lê próxima palavra
-				p = strtok(NULL, " ");
-			}
-	    }
-	}
+                // Lê próxima palavra
+                p = strtok(NULL, " ");
+            }
+        }
+    }
 
-	fclose(arq);
+    fclose(arq);
 
     escreverSaida();
 
-	return 0;
+    return 0;
 }
