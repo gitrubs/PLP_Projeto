@@ -339,11 +339,11 @@ int automatoVar(char* palavra,int n){
               goto q1;
            }
         }
-
-
 }
 
+// Procura pelo id na lista criada
 int searchID (char * palavra,int n){
+    // Cria a lista em caso de ela ainda não existir
     if(ids == NULL){
         ids = (idIdentifier*) calloc(1,sizeof(idIdentifier));
         contId++;
@@ -353,10 +353,11 @@ int searchID (char * palavra,int n){
         return ids->id;
     }
     else{
+        // Procura o id na lista buscando pela palavra passada
             idIdentifier* iter = ids;
             while(iter != NULL){
                 if(iter->size == n){
-                    if(equals(palavra,iter->literal,n) == 1){
+                    if(equals(palavra,iter->literal) == 1){
                         return iter->id;
                     }
                 }
@@ -374,9 +375,17 @@ int searchID (char * palavra,int n){
     }
    return 0;
 }
-int equals(char* palavra,char* palavra2,int n){
-    int i = 0;
-    for(i = 0;i < n;i++){
+
+// Função auxiliar de verificação de igualdade entre 2 palavras
+int equals(char* palavra,char* palavra2){
+
+    if (strlen(palavra) != strlen(palavra2)) {
+        return 0;
+    }
+
+    int n = strlen(palavra);
+
+    for(int i = 0;i < n;i++){
         if(palavra[i] != palavra2[i]){
             return 0;
         }
@@ -384,13 +393,11 @@ int equals(char* palavra,char* palavra2,int n){
     return 1;
 }
 
+// Reconhecimento de palavra reservada da linguagem
 int verificaPalavraReservada(char palavra[], int tamPalavra)
 {
 	int quantPalavrasReservadas = 18;
 	int tamMaiorPalavraReservada = 9;
-
-	// Flag para verificar se palavra é reservada
-	int flagReservada = 1;
 
 	char * palavrasReservadas[18];
 	palavrasReservadas[0] = "program";
@@ -412,29 +419,13 @@ int verificaPalavraReservada(char palavra[], int tamPalavra)
 	palavrasReservadas[16] = "not";
 	palavrasReservadas[17] = "true";
 
-	// Percorre as palavras reservadas
+	// Percorre as palavras reservadas e verifica a palavra dada
 	int i;
 	for(i = 0; i < quantPalavrasReservadas; i++)
 	{
-		flagReservada = 1;
 		char * palavraReservada = palavrasReservadas[i];
-		int j;
 
-		// Se a palavra reservada for maior do que a palavra a ser verificada, não verifica
-		if (tamPalavra <= strlen(palavraReservada));
-		{
-			// Compara a palavra com a palavra reservada
-			for(j = 0; j < tamPalavra; j++)
-			{
-				//printf("%c %c \n", palavra[j], palavraReservada[j]);
-				if(palavra[j] != palavraReservada[j])
-				{
-					flagReservada = 0;
-					break;
-				}
-			}
-		}
-		if(flagReservada == 1 && j == strlen(palavraReservada))
+        if(equals(palavra, palavraReservada) == 1)
 		{
 			printf("RESERVED WORD %s\n", palavra);
 			return 1;
