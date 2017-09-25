@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Declaração de funções e variáveis globais
 int automato(char* palavra,int n);
 int automatoSimbolo (char* palavra, int n);
 int automatoNumero (char * palavra , int n);
@@ -10,6 +11,7 @@ int searchID (char * palavra,int n);
 int equals(char * palavra, char* palavra2, int n);
 int contId = 0;
 
+// Estrutura para armazenar ids
 typedef struct _idIdentifier{
     int id;
     char * literal;
@@ -19,11 +21,15 @@ typedef struct _idIdentifier{
 
 idIdentifier* ids;
 
+// Autômato de reconhecimento global
 int automato(char* palavra,int n){
     int retorno = 0;
+    // Verifica se o cursor se encontra em algum número (0...9)
     if(palavra[0] >= 48 && palavra[0] <= 57){
         retorno = automatoNumero(palavra,n);
-    } else if(palavra[0] == '_' || palavra[0] >= 64 && palavra[0] <= 90 || palavra[0] >= 97 && palavra[0] <= 122){
+    } // Verifica se o cursor está em uma possível variável (A...Z || a...z || _)
+    else if(palavra[0] == '_' || palavra[0] >= 65 && palavra[0] <= 90 || palavra[0] >= 97 && palavra[0] <= 122){
+        // Reconhece o operador 'div' ou uma variável qualquer
         if(palavra[0] == 'd' && n == 3){
             if(automatoSimbolo(palavra,n)){
                 retorno = 1;
@@ -40,9 +46,11 @@ int automato(char* palavra,int n){
     return retorno;
 }
 
+// Autômato para reconhecer símbolos ('<', '<=', '>', '>=', '<>', ':=', '//', '(', ')', '*', '+', ',', ';', '.', 'div', '-')
 int automatoSimbolo(char* palavra,int n){
     int i = 0;
     goto q0;
+    // Estado inicial
     q0:
         if(i == n){
             printf("Palavra nao reconhecida \n");
@@ -107,6 +115,7 @@ int automatoSimbolo(char* palavra,int n){
 
         }
     }
+    // '<'
     q2:
         if(i == n){
             printf("RELOP <");
@@ -128,6 +137,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // '<>'
     q1:
         if(i==n){
             printf("RELOP <> \n");
@@ -135,6 +145,7 @@ int automatoSimbolo(char* palavra,int n){
         } else{
             printf("Simbolo Invalido \n");
         }
+    // '>'
     q3:
         if(i == n){
             printf("RELOP > \n");
@@ -151,6 +162,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // ':='
     q5:
         if(i == n){
             if(palavra[i-2] == ':'){
@@ -164,6 +176,7 @@ int automatoSimbolo(char* palavra,int n){
             printf("Simbolo Invalido\n");
             return 0;
         }
+    // ":"
     q4:
         if(i == n){
             printf("DELIMITER %c \n",palavra[i-1]);
@@ -179,6 +192,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // '(' || ')' || ',' || '.' || ';'
     q10:
         if(i == n){
             printf("DELIMITER %c \n", palavra[i-1]);
@@ -187,6 +201,7 @@ int automatoSimbolo(char* palavra,int n){
             printf("Simbolo Invalido \n");
             return 0;
         }
+    // '/'
     q6:
         if(i == n){
             printf("Simbolo Invalido \n");
@@ -201,6 +216,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // '/*'
     q7:
         if(i == n){
             printf("Simbolo Invalido \n");
@@ -218,6 +234,7 @@ int automatoSimbolo(char* palavra,int n){
                 goto q8;
             }
         }
+    // '/* ... *'
     q8:
         if(i == n){
             printf("Simbolo Invalido \n");
@@ -232,6 +249,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // '/* ... */'
     q9:
         if(i == n){
             printf("Comentario \n");
@@ -240,6 +258,7 @@ int automatoSimbolo(char* palavra,int n){
             printf("Simbolo Invalido \n");
             return 0;
         }
+    // '*' || '+' || 'd' || '-'
     q11:
         if(i == n){
             printf("Operador %c \n",palavra[i-1]);
@@ -255,6 +274,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // 'di'
     q12:
         if(i == n){
             printf("Palavra nao reconhecida \n");
@@ -270,6 +290,7 @@ int automatoSimbolo(char* palavra,int n){
                     return 0;
             }
         }
+    // 'div'
     q13:
         if(i == n){
             printf("Operador %s \n",palavra);
@@ -279,6 +300,8 @@ int automatoSimbolo(char* palavra,int n){
             return 0;
         }
 }
+
+// Autômato de reconhecimento de números
 int automatoNumero(char* palavra,int n){
         int i = 1;
         goto q1;
@@ -287,6 +310,7 @@ int automatoNumero(char* palavra,int n){
                  printf("INTEGER VALUE %s \n",palavra);
                  return 1;
             }
+            // Se não estiver entre 0 e 9
             else if(!(palavra[i] >= 48 && palavra[i] <= 57)){
                 printf("Simbolo Invalido \n");
                 return 0;
@@ -296,6 +320,8 @@ int automatoNumero(char* palavra,int n){
             }
 
 }
+
+// Reconhecimento de variáveis
 int automatoVar(char* palavra,int n){
     int  i = 1;
     goto q1;
@@ -304,7 +330,8 @@ int automatoVar(char* palavra,int n){
             printf("ID %d %s \n",searchID(palavra,n), palavra);
             return 1;
         } else{
-            if(!(palavra[i] >= 48 && palavra[i] <= 57 || palavra[i] == '_' || palavra[i] >= 64 && palavra[i] <= 90 || palavra[i] >= 97 && palavra[i] <= 122)){
+            // Verifica se está entre (0 e 9) ou ('a' e 'z') ou ('A' e 'Z') ou '_'
+            if(!(palavra[i] >= 48 && palavra[i] <= 57 || palavra[i] == '_' || palavra[i] >= 65 && palavra[i] <= 90 || palavra[i] >= 97 && palavra[i] <= 122)){
                 printf("Simbolo Invalido \n");
                 return 0;
            } else{
@@ -404,7 +431,7 @@ int verificaPalavraReservada(char palavra[], int tamPalavra)
 				{
 					flagReservada = 0;
 					break;
-				}	
+				}
 			}
 		}
 		if(flagReservada == 1 && j == strlen(palavraReservada))
